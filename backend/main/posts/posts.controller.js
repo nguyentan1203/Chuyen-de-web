@@ -18,11 +18,12 @@ const getPosts = async (req, res) => {
   const {
     user: defaultUser = "all",
     search: defaultSearch = "",
+    filter: defaultFilter = {},
     status: defaultStatus = "all",
     page: defaultPage,
     pageSize: defaultPageSize,
-    order = "desc",
-    orderby = "updated_at",
+    order = "asc",
+    orderby = "Title",
     loadAll = false,
     loadMore = false,
   } = req.query;
@@ -55,7 +56,7 @@ const getPosts = async (req, res) => {
             { Content: { $regex: defaultSearch, $options: "i" } },
           ],
         }
-      : {}),
+      : { ...defaultFilter }),
     ...(defaultStatus === "all" ? {} : { Status: defaultStatus }),
   };
 
