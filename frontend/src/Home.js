@@ -3,6 +3,8 @@ import {
   FileInput,
   Label,
   Modal,
+  Pagination,
+  Select,
   Spinner,
   Textarea,
   TextInput,
@@ -18,7 +20,7 @@ import Applies from "./main/Applies/Applies";
 import { postsState } from "./reducers/postsReducer";
 
 export default function Home() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const page_size = searchParams.get("page_size") || 10;
 
@@ -27,10 +29,13 @@ export default function Home() {
   const [postSelected, setPostSelected] = useState(0);
 
   const searchRef = useRef(null);
+  const [order, setOrder] = useState("desc");
   const [search, setSearch] = useState("");
 
+  const [filter, setFilter] = useState({});
+
   const posts = useRecoilValue(
-    postsState({ search, status: "published", page, page_size })
+    postsState({ search, status: "published", page, page_size, order, filter })
   );
 
   const { items, pagination } = posts;
@@ -79,6 +84,17 @@ export default function Home() {
     [postSelected]
   );
 
+  const onFilter = useCallback(async (e) => {
+    const { value, name } = e.target;
+    setFilter((prev) => {
+      const newFilter = { ...prev, [name]: value };
+      if (!value) {
+        delete newFilter[name];
+      }
+      return newFilter;
+    });
+  }, []);
+
   return (
     <div className="mx-auto my-4">
       <div className="mt-4">
@@ -100,6 +116,7 @@ export default function Home() {
             </a>
           </div>
           <div className="flex items-center">
+           
             <TextInput ref={searchRef} type="text" placeholder="Tìm kiếm..." />
             <div className="ml-2">
               <Button onClick={onSearch}>
@@ -110,6 +127,128 @@ export default function Home() {
           {/* <span>
             Trang {page} / <strong>{pagination.total}</strong> việc làm
           </span> */}
+        </div>
+        <div className="flex gap-2">
+        <Select value={order} onChange={(o) => setOrder(o.target.value)}>
+                <option value="desc">Cũ Nhất</option>
+                <option value="asc">Mới Nhất</option>
+              </Select>
+          <Select name="JobType" onChange={onFilter}>
+            <option value="">Loại việc làm</option>
+            <option>Thực tập</option>
+            <option>Toàn thời gian cố định</option>
+            <option>Toàn thời gian tạm thời</option>
+            <option>Bán thời gian cố định</option>
+            <option>Bán thời gian tạm thời</option>
+            <option>Theo hợp đồng tư vấn</option>
+          </Select>
+          <Select name="JobLevel" onChange={onFilter}>
+            <option value="">Cấp bậc</option>
+            <option>Mới tốt nghiệp / thực tập</option>
+            <option>Nhân viên</option>
+            <option>Trưởng nhóm</option>
+            <option>Trưởng phòng</option>
+            <option>Phó giám đốc</option>
+            <option>Giám đốc</option>
+            <option>Tổng giám đốc điều hành</option>
+          </Select>
+          <Select name="JobExperience" onChange={onFilter}>
+            <option value="">Kinh nghiệm</option>
+            <option>Dưới 1 năm</option>
+            <option>1 năm</option>
+            <option>2 năm</option>
+            <option>3 năm</option>
+            <option>4 năm</option>
+            <option>5 năm</option>
+            <option>Trên 5 năm</option>
+          </Select>
+          <Select name="JobCareer" onChange={onFilter}>
+            <option value="">Ngành nghề</option>
+            <option>Bán hàng</option>
+            <option>Biên tập/ Báo chí/ Truyền hình</option>
+            <option>Bảo hiểm/ Tư vấn bảo hiểm</option>
+            <option>Bảo vệ/ An ninh/ Vệ sỹ</option>
+            <option>Phiên dịch/ Ngoại ngữ</option>
+            <option>Bưu chính</option>
+            <option>Chứng khoán - Vàng</option>
+            <option>Cơ khí - Chế tạo</option>
+            <option>Công chức - Viên chức</option>
+            <option>Công nghệ cao</option>
+            <option>Công nghiệp</option>
+            <option>Dầu khí - Hóa chất</option>
+            <option>Dệt may - Da giày</option>
+            <option>Dịch vụ</option>
+            <option>Du lịch</option>
+            <option>Đầu tư</option>
+            <option>Điện - Điện tử - Điện lạnh</option>
+            <option>Điện tử viễn thông</option>
+            <option>Freelance</option>
+            <option>Games</option>
+            <option>Giáo dục - Đào tạo</option>
+            <option>Giao nhận/ Vận chuyển/ Kho bãi</option>
+            <option>Hàng gia dụng</option>
+            <option>Hàng hải</option>
+            <option>Hàng không</option>
+            <option>Hành chính - Văn phòng</option>
+            <option>Hóa học - Sinh học</option>
+            <option>Hoạch định - Dự án</option>
+            <option>IT phần cứng/mạng</option>
+            <option>IT phần mềm</option>
+            <option>In ấn - Xuất bản</option>
+            <option>Kế toán - Kiểm toán</option>
+            <option>Khách sạn - Nhà hàng</option>
+            <option>Kiến trúc - Thiết kế nội thất</option>
+            <option>Bất động sản</option>
+            <option>Kỹ thuật</option>
+            <option>Kỹ thuật ứng dụng</option>
+            <option>Làm bán thời gian</option>
+            <option>Làm đẹp/ Thể lực/ Spa</option>
+            <option>Lao động phổ thông</option>
+            <option>Lương cao</option>
+            <option>Marketing - PR</option>
+            <option>Môi trường</option>
+            <option>Mỹ phẩm - Trang sức</option>
+            <option>Phi chính phủ/ Phi lợi nhuận</option>
+            <option>Ngân hàng/ Tài Chính</option>
+            <option>Ngành nghề khác</option>
+            <option>Nghệ thuật - Điện ảnh</option>
+            <option>Người giúp việc/ Phục vụ/ Tạp vụ</option>
+            <option>Nhân sự</option>
+            <option>Nhân viên kinh doanh</option>
+            <option>Nông - Lâm - Ngư nghiệp</option>
+            <option>Ô tô - Xe máy</option>
+            <option>Pháp luật/ Pháp lý</option>
+            <option>Phát triển thị trường</option>
+            <option>Promotion Girl/ Boy (PG-PB)</option>
+            <option>QA-QC/ Thẩm định/ Giám định</option>
+            <option>Quan hệ đối ngoại</option>
+            <option>Quản trị kinh doanh</option>
+            <option>Sinh viên làm thêm</option>
+            <option>Startup</option>
+            <option>Thể dục/ Thể thao</option>
+            <option>Thiết kế - Mỹ thuật</option>
+            <option>Thiết kế đồ họa - Web</option>
+            <option>Thời trang</option>
+            <option>Thủ công mỹ nghệ</option>
+            <option>Thư ký - Trợ lý</option>
+            <option>Thực phẩm - Đồ uống</option>
+            <option>Thực tập</option>
+            <option>Thương mại điện tử</option>
+            <option>Tiếp thị - Quảng cáo</option>
+            <option>Tổ chức sự kiện - Quà tặng</option>
+            <option>Tư vấn/ Chăm sóc khách hàng</option>
+            <option>Vận tải - Lái xe/ Tài xế</option>
+            <option>Nhân viên trông quán internet</option>
+            <option>Vật tư/Thiết bị/Mua hàng</option>
+            <option>Việc làm cấp cao</option>
+            <option>Việc làm Tết</option>
+            <option>Xây dựng</option>
+            <option>Xuất - Nhập khẩu</option>
+            <option>Xuất khẩu lao động</option>
+            <option>Y tế - Dược</option>
+            <option>Trắc Địa / Địa Chất</option>
+            <option>Người Nước Ngoài/Việt Kiều</option>
+          </Select>
         </div>
         <Applies items={items} onSelect={onSelect} />
         <Modal show={isShowModal} onClose={() => setIsShowModal(false)}>
@@ -172,17 +311,17 @@ export default function Home() {
             </form>
           </Modal.Body>
         </Modal>
-
-        {/* <div className="flex justify-center mt-4">
+        <div className="flex justify-end mt-2">
           <Pagination
-            currentPage={pagination.page}
             showIcons={true}
-            totalPages={pagination.pageTotal}
+            currentPage={pagination.page}
+            totalPages={pagination.pageTotal || 1}
+            onPageChange={(page) => setSearchParams({ page, page_size })}
           />
-        </div> */}
+        </div>
       </div>
       <footer className="flex justify-center my-8">
-        <span>Copyright @ Bản quyền thuộc về Nhóm F.</span>
+        <span>Copyright @ Bản quyền thuộc về RECRUIT Việt Nam.</span>
       </footer>
     </div>
   );

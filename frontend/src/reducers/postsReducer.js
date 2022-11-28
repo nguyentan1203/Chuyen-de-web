@@ -1,4 +1,4 @@
-import { selectorFamily } from "recoil";
+import { atom, selectorFamily } from "recoil";
 import apiCaller from "../core/api";
 
 export const postState = selectorFamily({
@@ -12,11 +12,17 @@ export const postState = selectorFamily({
   },
 });
 
+export const forceLoadPostState = atom({
+  key: "forceLoadPostState",
+  default: {},
+});
+
 export const postsState = selectorFamily({
   key: "postsState",
   get:
-    ({ user, search, status, page, page_size }) =>
-    async () => {
+    ({ user, search, status, page, page_size, order, filter }) =>
+    async ({ get }) => {
+      get(forceLoadPostState);
       const item = await apiCaller("posts", "GET", {
         params: {
           user,
@@ -24,6 +30,8 @@ export const postsState = selectorFamily({
           status,
           page,
           pageSize: page_size,
+          order,
+          filter,
         },
       });
       return item.results ? item.results.data : null;
