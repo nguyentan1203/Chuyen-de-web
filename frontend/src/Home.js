@@ -321,7 +321,7 @@ export default function Home() {
         </div>
       </div>
       <footer className="flex justify-center my-8">
-        <span>Copyright @ Bản quyền thuộc về RECRUIT Việt Nam.</span>
+        
       </footer>
     </div>
   );

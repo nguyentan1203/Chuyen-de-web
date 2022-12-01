@@ -97,6 +97,7 @@ export default function PostsCreate() {
           type="number"
           name="JobSalary"
           placeholder="Mức lương (VNĐ)"
+          min={0}
           required={true}
         />
         <Select name="JobType" required={true}>
@@ -120,7 +121,6 @@ export default function PostsCreate() {
         </Select>
         <Select name="JobExperience" required={true}>
           <option value="">Kinh nghiệm</option>
-          <option>Không cần kinh nghiệm</option>
           <option>Dưới 1 năm</option>
           <option>1 năm</option>
           <option>2 năm</option>

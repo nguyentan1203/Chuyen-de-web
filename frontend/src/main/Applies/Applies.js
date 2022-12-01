@@ -1,5 +1,6 @@
 import { Button, Card } from "flowbite-react";
 import React from "react";
+import { Link } from "react-router-dom";
 import { timeSince } from "../../core/commonFuncs";
 
 export default function Applies({ items, onSelect }) {
@@ -15,9 +16,11 @@ export default function Applies({ items, onSelect }) {
             className="object-cover w-24 h-24"
           /> */}
               <div className="ml-4">
-                <h4 className="text-lg font-bold tracking-tight text-gray-900 uppercase">
-                  {item.Title}
-                </h4>
+                <Link to={`/detail/${item._id}`} className="capitalize">
+                  <h4 className="text-lg font-bold tracking-tight text-blue-600 uppercase">
+                    {item.Title}
+                  </h4>
+                </Link>
                 {/* <h5 className="tracking-tight text-gray-900 uppercase">
                 Công ty tài chính TNHH HD SAISON
               </h5> */}

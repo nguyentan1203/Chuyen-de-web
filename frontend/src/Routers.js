@@ -6,8 +6,10 @@ import SignIn from "./main/Auth/SignIn";
 import SignUp from "./main/Auth/SignUp";
 import Posts from "./main/Posts/Posts";
 import PostsCreate from "./main/Posts/PostsCreate";
+import PostsDetail from "./main/Posts/PostsDetail";
 import PostsUpdate from "./main/Posts/PostsUpdate";
 import PostsView from "./main/Posts/PostsView";
+import Users from "./main/Users/Users";
 
 export default function Routers() {
   return (
@@ -33,8 +35,33 @@ export default function Routers() {
             }
           />
         </Route>
+        <Route path="/users">
+          <Route
+            index
+            element={
+              <Suspense fallback="Đang tải...">
+                <Users />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route
+          path="detail/:id"
+          element={
+            <Suspense fallback={"Đang tải..."}>
+              <PostsDetail />
+            </Suspense>
+          }
+        />
         <Route path="/posts">
-          <Route index element={<Posts />} />
+          <Route
+            index
+            element={
+              <Suspense fallback="Đang tải...">
+                <Posts />
+              </Suspense>
+            }
+          />
           <Route path="create" element={<PostsCreate />} />
           <Route
             path="view/:id"

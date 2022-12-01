@@ -1,11 +1,14 @@
-import { Pagination, Table } from "flowbite-react";
+import {
+  Button, Pagination, Table
+} from "flowbite-react";
 import React, { useCallback, useEffect } from "react";
+import { User } from "react-feather";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useRecoilRefresher_UNSTABLE, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import apiCaller from "../core/api";
 import { accessUserState } from "../reducers/authReducer";
-import { postsState } from "../reducers/postsReducer";
+import { forceLoadPostState, postsState } from "../reducers/postsReducer";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -15,9 +18,7 @@ export default function Admin() {
 
   const authUser = useRecoilValue(accessUserState);
   const posts = useRecoilValue(postsState({ page, page_size }));
-  const reloadPosts = useRecoilRefresher_UNSTABLE(
-    postsState({ page, page_size })
-  );
+  const reloadPosts = useSetRecoilState(forceLoadPostState);
 
   const { pagination } = posts;
 
@@ -35,7 +36,33 @@ export default function Admin() {
     (id, status) => {
       toast
         .promise(
-          apiCaller(`posts/${id}`, "PUT", { data: { Status: status } }),
+          apiCaller(`posts/${id}`, "PUT", { data: { Status: status } }).then(
+            (res) => {
+              if (!res.results.data) {
+                throw new Error(res.results.data.message);
+              }
+            }
+          ),
+          {
+            loading: "Đang xử lý",
+            success: "Xử lý thành công.",
+            error: "Xử lý thất bại.",
+          }
+        )
+        .finally(() => reloadPosts({}));
+    },
+    [reloadPosts]
+  );
+
+  const onHandleDelete = useCallback(
+    (id) => {
+      toast
+        .promise(
+          apiCaller(`posts/${id}`, "DELETE").then((res) => {
+            if (!res.results.data) {
+              throw new Error(res.results.data.message);
+            }
+          }),
           {
             loading: "Đang xử lý",
             success: "Xử lý thành công.",
@@ -47,23 +74,16 @@ export default function Admin() {
     [reloadPosts]
   );
 
-  const onHandleDelete = useCallback(
-    (id) => {
-      toast
-        .promise(apiCaller(`posts/${id}`, "DELETE"), {
-          loading: "Đang xử lý",
-          success: "Xử lý thành công.",
-          error: "Xử lý thất bại.",
-        })
-        .then(() => reloadPosts());
-    },
-    [reloadPosts]
-  );
-
   return (
     <div>
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-bold">Administrator</span>
+      </div>
+      <div className="mt-1">
+        <Button onClick={() => navigate("/users")}>
+          <User size={13} className="mr-1 text-capitalize" /> Danh sách người
+          dùng
+        </Button>
       </div>
       <div className="flex justify-between items-center mt-4">
         <h5 className="font-bold capitalize">Danh sách công việc</h5>
@@ -94,7 +114,7 @@ export default function Admin() {
                   {post.Title}
                 </Link>
               </Table.Cell>
-              <Table.Cell>{post.User_Ref.Email}</Table.Cell>
+              <Table.Cell>{post?.User_Ref?.Email || "―"}</Table.Cell>
               <Table.Cell>{post.JobType}</Table.Cell>
               <Table.Cell>{post.JobSalary} VNĐ</Table.Cell>
               <Table.Cell>{post.JobCareer}</Table.Cell>
