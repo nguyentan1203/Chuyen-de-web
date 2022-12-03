@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../../core/nodemailer");
 const { sendResponseSuccess } = require("../../core/commonFuncs");
 const UsersModel = require("../users/users.model");
+const crypto = require("crypto");
 
 const { APP_TOKEN_JWT_KEY = "", APP_BCRYPT_LIMIT_ROUNDS: rounds } = process.env;
 
@@ -59,4 +60,39 @@ const signUp = async (req, res) => {
   });
 };
 
-module.exports = { signIn, signUp };
+const forgotPassword = async (req, res) => {
+  const { Email = "" } = req.body;
+
+  const user = await UsersModel.findOne({ Email }).exec();
+  if (user) {
+    const newToken = crypto.randomBytes(20).toString("hex");
+
+    user.TokenResetPassword = newToken;
+    await user.save();
+
+    sendEmail(
+      Email,
+      "Đổi mật khẩu | React Recruit.",
+      `Bạn vui lòng truy cập vào đường dẫn sau để đổi mật khẩu: <a href="http://localhost:3000/reset-password/${newToken}">http://localhost:3000/reset-password/${newToken}</a><br/>Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.`
+    );
+  }
+
+  return sendResponseSuccess(res, { results: { data: user } });
+};
+
+const resetPassword = async (req, res) => {
+  const { Token = "", Password = "" } = req.body;
+
+  const user = await UsersModel.findOne({ TokenResetPassword: Token }).exec();
+  if (!user) {
+    throw new Error("ERROR_RESET_PASSWORD_FAILED");
+  }
+
+  user.Password = await bcrypt.hash(Password, Number(rounds));
+  user.TokenResetPassword = "";
+  await user.save();
+
+  return sendResponseSuccess(res, { results: { data: user, rowsAffected: 1 } });
+};
+
+module.exports = { signIn, signUp, forgotPassword, resetPassword };
