@@ -116,7 +116,12 @@ export default function Home() {
             </a>
           </div>
           <div className="flex items-center">
-           
+            <div className="mr-2">
+              <Select value={order} onChange={(o) => setOrder(o.target.value)}>
+                <option value="asc">Cũ Nhất</option>
+                <option value="desc">Mới Nhất</option>
+              </Select>
+            </div>
             <TextInput ref={searchRef} type="text" placeholder="Tìm kiếm..." />
             <div className="ml-2">
               <Button onClick={onSearch}>
@@ -129,10 +134,6 @@ export default function Home() {
           </span> */}
         </div>
         <div className="flex gap-2">
-        <Select value={order} onChange={(o) => setOrder(o.target.value)}>
-                <option value="desc">Cũ Nhất</option>
-                <option value="asc">Mới Nhất</option>
-              </Select>
           <Select name="JobType" onChange={onFilter}>
             <option value="">Loại việc làm</option>
             <option>Thực tập</option>
@@ -321,7 +322,7 @@ export default function Home() {
         </div>
       </div>
       <footer className="flex justify-center my-8">
-        
+        <span>Copyright @ Bản quyền thuộc về RECRUIT Việt Nam.</span>
       </footer>
     </div>
   );

@@ -30,6 +30,7 @@ const UsersSchema = new Schema(
       default: "active",
       enum: ["active", "banned"],
     },
+    TokenResetPassword: { type: String },
   },
   {
     collection: "users",

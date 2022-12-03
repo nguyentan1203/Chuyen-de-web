@@ -2,6 +2,8 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Admin from "./main/Admin";
+import ForgotPassword from "./main/Auth/ForgotPassword";
+import ResetPassword from "./main/Auth/ResetPassword";
 import SignIn from "./main/Auth/SignIn";
 import SignUp from "./main/Auth/SignUp";
 import Posts from "./main/Posts/Posts";
@@ -85,6 +87,12 @@ export default function Routers() {
         </Route>
         <Route path="/sign-up">
           <Route index element={<SignUp />} />
+        </Route>
+        <Route path="/forgot-password">
+          <Route index element={<ForgotPassword />} />
+        </Route>
+        <Route path="/reset-password/:token">
+          <Route index element={<ResetPassword />} />
         </Route>
       </Routes>
     </BrowserRouter>

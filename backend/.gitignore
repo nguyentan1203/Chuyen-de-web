@@ -1,7 +1,3 @@
-<<<<<<< HEAD
 node_modules
 public/uploads/*
 !public/uploads/.gitkeep
-=======
-/node_modules/
->>>>>>> Forgot_Password

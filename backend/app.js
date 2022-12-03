@@ -26,7 +26,7 @@ app.use("/public", express.static(process.cwd() + "/public"));
 
 /* MongoDB */
 mongoose
-  .connect(APP_MONGODB_URI || `mongodb://localhost`, { dbName: "mongo" })
+  .connect(APP_MONGODB_URI || `mongodb://127.0.0.1`, { dbName: "mongo" })
   .then(() => console.log("✔️ Connected To Database Successfully!"))
   .catch((err) => console.log(`❌ Failed To Connect To Database!\n ${err}`));
 
