@@ -13,5 +13,6 @@ export default function apiCaller(endpoint, method = "GET", data = null) {
       Authorization: `Bearer ${getAuth()?.accessToken}`,
       ...data?.headers,
     },
-  }).then((res) => res.data);
+  })
+    .then((res) => res.data);
 }

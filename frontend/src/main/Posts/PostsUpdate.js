@@ -117,6 +117,7 @@ export default function PostsUpdate() {
           type="number"
           name="JobSalary"
           placeholder="Mức lương (VNĐ)"
+          min={0}
           required={true}
         />
         <Select name="JobType" required={true}>

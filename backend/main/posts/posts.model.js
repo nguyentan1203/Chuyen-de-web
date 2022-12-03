@@ -31,6 +31,7 @@ const PostsSchema = new Schema(
     JobLevel: { type: String, default: "" },
     JobExperience: { type: String, default: "" },
     JobCareer: { type: String, default: "" },
+    Date: { type: Date, default: Date.now },
   },
   {
     collection: "posts",

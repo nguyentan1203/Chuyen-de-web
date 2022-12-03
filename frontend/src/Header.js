@@ -13,6 +13,10 @@ export default function Header() {
     setAuth(null);
   }, [setAuth]);
 
+  const isAuthPage =
+    window.location.pathname === "/sign-in" ||
+    window.location.pathname === "/sign-up";
+
   return (
     <div className="w-full flex justify-between mb-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -29,20 +33,21 @@ export default function Header() {
           </a>
         )}
       </div>
-      <div>
-        {user ? (
-          <Button onClick={onLogout}>
-            <LogOut size={13} className="mr-1" /> Đăng Xuất
-          </Button>
-        ) : (
-          <a href="/sign-in">
-            <Button>
-              <LogIn size={13} className="mr-1" /> Đăng Nhập
+      {!isAuthPage && (
+        <div>
+          {user ? (
+            <Button onClick={onLogout}>
+              <LogOut size={13} className="mr-1" /> Đăng Xuất
             </Button>
-          </a>
-        )}
-      </div>
+          ) : (
+            <a href="/sign-in">
+              <Button>
+                <LogIn size={13} className="mr-1" /> Đăng Nhập
+              </Button>
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-

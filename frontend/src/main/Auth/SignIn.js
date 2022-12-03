@@ -1,6 +1,7 @@
 import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Key, User } from "react-feather";
+import ReCAPTCHA from "react-google-recaptcha";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -8,9 +9,12 @@ import apiCaller from "../../core/api";
 import { delayLoading } from "../../core/commonFuncs";
 import { authState } from "../../reducers/authReducer";
 
+const CAPTCHA_SITE_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || "";
+
 export default function SignIn() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const recaptchaRef = useRef(null);
 
   const auth = useRecoilValue(authState);
   const setAuth = useSetRecoilState(authState);
@@ -24,6 +28,12 @@ export default function SignIn() {
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+
+      const recaptcha = recaptchaRef?.current?.getValue();
+      if (!recaptcha) {
+        toast.error("Vui lòng xác nhận bạn không phải là robot.");
+        return;
+      }
 
       setLoading(true);
       await delayLoading();
@@ -81,6 +91,23 @@ export default function SignIn() {
                 addon={<Key size={15} />}
                 placeholder="Mật khẩu"
               />
+              <div className="mt-1">
+                <Label htmlFor="agree">
+                  <Link
+                    to="/forgot-password"
+                    className="text-blue-600 hover:underline dark:text-blue-500"
+                  >
+                    Quên mật khẩu?
+                  </Link>
+                </Label>
+              </div>
+              <div className="mt-3">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  size="normal"
+                  sitekey={CAPTCHA_SITE_KEY}
+                />
+              </div>
               <div className="w-full mt-3">
                 <Button
                   type="submit"
